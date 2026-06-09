@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tentang Kami — PME Indonesia</title>
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+.page-hero{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--accent-700),var(--accent) 60%,var(--cyan));color:#fff}
+.page-hero::after{content:"";position:absolute;right:-80px;top:-80px;width:340px;height:340px;border-radius:50%;background:rgba(255,255,255,.1)}
+.page-hero .wrap{padding:62px 0;position:relative}
+.page-hero .crumb{display:flex;gap:9px;font-size:13.5px;color:rgba(255,255,255,.8);margin-bottom:16px;flex-wrap:wrap}
+.page-hero .crumb a{color:rgba(255,255,255,.8)}.page-hero .crumb .sep{opacity:.6}.page-hero .crumb b{color:#fff}
+.page-hero h1{color:#fff;font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-.025em}
+.page-hero p{color:rgba(255,255,255,.92);max-width:680px;margin-top:16px;font-size:17px}
+
+.story .wrap{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}
+.story-img{position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
+.story-img image-slot{width:100%;height:440px}
+.story-img .tag{position:absolute;left:22px;bottom:22px;background:#fff;border-radius:16px;padding:14px 18px;box-shadow:var(--shadow-lg);display:flex;gap:13px;align-items:center}
+.story-img .tag .ic{width:46px;height:46px;border-radius:13px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.story-img .tag b{font-family:var(--font-head);font-size:18px;display:block}
+.story-img .tag span{font-size:12px;color:var(--muted)}
+
+.vm-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:46px}
+.vm-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:34px;box-shadow:var(--shadow-sm)}
+.vm-card .ic{width:58px;height:58px;border-radius:16px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-bottom:20px}
+.vm-card .ic svg{width:30px;height:30px}
+.vm-card h3{font-size:22px;margin-bottom:12px}
+.vm-card p{color:var(--ink-2);line-height:1.8}
+.vm-card ul{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.vm-card li{display:flex;gap:10px;font-size:14.5px;color:var(--ink-2)}
+.vm-card li svg{width:20px;height:20px;color:var(--accent);flex-shrink:0;margin-top:2px}
+
+.stats{background:var(--dark);color:#fff;position:relative;overflow:hidden}
+.stats::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 15% 0%, rgba(20,87,181,.45), transparent 60%),radial-gradient(50% 120% at 90% 100%, rgba(17,182,214,.32), transparent 60%)}
+.stats .wrap{position:relative}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+.stat .num{font-family:var(--font-head);font-weight:800;font-size:clamp(38px,4.4vw,56px);line-height:1;background:linear-gradient(135deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .plus{color:var(--cyan)}
+.stat h4{font-size:16px;margin-top:12px;color:#fff;font-weight:600}
+
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:46px}
+.value{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:30px;transition:.2s}
+.value:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--accent-soft)}
+.value .ic{width:54px;height:54px;border-radius:15px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-bottom:18px}
+.value .ic svg{width:28px;height:28px}
+.value h4{font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:8px}
+.value p{color:var(--muted);font-size:14.5px}
+
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:46px}
+.team-card{text-align:center}
+.team-photo{position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md);margin-bottom:16px}
+.team-photo image-slot{width:100%;height:290px}
+.team-card h4{font-family:var(--font-head);font-size:18px;font-weight:700}
+.team-card .role{color:var(--accent);font-size:13.5px;font-weight:600;margin-top:3px}
+
+@media(max-width:900px){.story .wrap{grid-template-columns:1fr;gap:30px}.story-img{order:-1}.vm-grid{grid-template-columns:1fr}.values-grid{grid-template-columns:1fr}.team-grid{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:1fr 1fr;gap:36px 20px}}
+
+.drawer{position:fixed;inset:0;z-index:200;visibility:hidden}.drawer.open{visibility:visible}
+.drawer-scrim{position:absolute;inset:0;background:rgba(12,26,43,.5);opacity:0;transition:.25s}.drawer.open .drawer-scrim{opacity:1}
+.drawer-panel{position:absolute;top:0;left:0;bottom:0;width:84%;max-width:330px;background:#fff;padding:24px;transform:translateX(-100%);transition:transform .3s cubic-bezier(.3,.7,.3,1);overflow:auto}
+.drawer.open .drawer-panel{transform:none}.drawer-panel .brand{margin-bottom:24px}
+.drawer-panel a{display:block;padding:13px 12px;border-radius:10px;font-family:var(--font-head);font-weight:600;color:var(--ink-2);font-size:15px}
+.drawer-panel a:hover{background:var(--accent-tint);color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap"><div class="tb-left"><a class="tb-item" href="tel:02182436214"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (021) 8243-6214</a><a class="tb-item" href="mailto:sales@pesonamitratama.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> sales@pesonamitratama.com</a></div><div class="tb-right"><div class="socials"><a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3a4 4 0 0 0-4 4v2H7v3h3v6h3v-6h3l1-3h-4v-2a1 1 0 0 1 1-1z"/></svg></a></div></div></div></div>
+
+<header class="header"><div class="wrap"><a class="brand" href="index.html"><img src="assets/pme-logo.png" alt="PT. Pesona Mitratama Indonesia" /></a><div class="searchbar"><input type="text" placeholder="Cari produk AC, sparepart, atau layanan…" /><button aria-label="Cari"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button></div><div class="h-right"><div class="h-account"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><a class="login-txt" href="#">Login</a><span class="reg-sep">/</span><a href="#">Daftar</a></div><a class="h-cart" href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1.6"/><circle cx="18" cy="21" r="1.6"/><path d="M2 3h2.5l2.2 12.5a2 2 0 0 0 2 1.7h8.5a2 2 0 0 0 2-1.6L21.5 7H6"/></svg><span class="count">1</span></a><button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button></div></div></header>
+
+<nav class="nav"><div class="wrap"><a href="index.html">Beranda</a><a href="katalog.html">AC Split</a><a href="katalog.html">AC Cassette</a><a href="katalog.html">Floor Standing</a><a href="katalog.html">Ceiling Duct</a><a href="katalog.html">VRV / VRF</a><a href="layanan.html">Layanan</a><a href="tentang.html" class="active">Tentang Kami</a><a href="kontak.html">Kontak</a><a href="kontak.html" class="quote-link">Minta Penawaran →</a></div></nav>
+
+<div class="drawer"><div class="drawer-scrim"></div><div class="drawer-panel"><a class="brand" href="index.html"><img src="assets/pme-logo.png" alt="PME" style="height:40px" /></a><a href="index.html">Beranda</a><a href="katalog.html">Katalog Produk AC</a><a href="layanan.html">Layanan</a><a href="tentang.html">Tentang Kami</a><a href="kontak.html">Kontak</a></div></div>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">Beranda</a><span class="sep">/</span><b>Tentang Kami</b></div>
+    <h1>Mitra Tepercaya Solusi Pendingin Udara</h1>
+    <p>PT. Pesona Mitratama Indonesia bergerak di bidang pengadaan jasa kontraktor dan maintenance service, dengan spesialisasi alat elektronik Air Conditioning (AC).</p>
+  </div>
+</section>
+
+<section class="section story">
+  <div class="wrap">
+    <div class="story-img reveal">
+      <image-slot id="about-story" shape="rounded" radius="22" placeholder="Foto kantor / tim PME"></image-slot>
+      <div class="tag"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg></div><div><b>4 Cabang</b><span>Jatiasih · Bekasi · Cikarang · Karawang</span></div></div>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Selamat Datang di PME Indonesia</span>
+      <h2 class="h-xl" style="margin-top:14px">Kepuasan Pelanggan adalah Tujuan Kami</h2>
+      <p class="lead" style="margin-top:18px">Pesona Mitratama Indonesia menyediakan penjualan AC, service dan maintenance, penyediaan sparepart AC, jasa kontraktor, retail dan distributor, serta dealer resmi beragam merk AC seperti Daikin, Gree, Panasonic, dan lainnya.</p>
+      <p class="muted" style="margin-top:16px">Dengan tujuan mulia dan komitmen untuk terus berkarya nyata, kami berkolaborasi dengan talenta muda potensial. Pembekalan pelatihan dan pengalaman di lapangan menjadikan personil kami ahli dan profesional, ditunjang peralatan memadai serta dedikasi kepemimpinan para eksekutif kami.</p>
+      <a class="btn btn-primary" style="margin-top:28px" href="kontak.html">Hubungi Kami <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="vm-grid">
+      <div class="vm-card reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div><h3>Visi</h3><p>Menjadi perusahaan kontraktor dan penyedia solusi pendingin udara terdepan yang dipercaya, dengan layanan prima dan kontribusi nyata bagi pembangunan.</p></div>
+      <div class="vm-card reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v14H3z"/><path d="M7 8h6M7 12h4M8 21h8M12 17v4"/></svg></div><h3>Misi</h3><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg> Memberikan solusi terbaik dengan tata kelola profesional.</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg> Membekali tim dengan pelatihan &amp; pengalaman lapangan.</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg> Menjaga kualitas dan kepuasan pelanggan di setiap proyek.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm stats">
+  <div class="wrap"><div class="stats-grid">
+    <div class="stat reveal"><div class="num"><span data-count="569">0</span><span class="plus">+</span></div><h4>Proyek Terselesaikan</h4></div>
+    <div class="stat reveal"><div class="num"><span data-count="2567">0</span><span class="plus">+</span></div><h4>Pelanggan Terpuaskan</h4></div>
+    <div class="stat reveal"><div class="num"><span data-count="200">0</span><span class="plus">+</span></div><h4>Tenaga Ahli</h4></div>
+    <div class="stat reveal"><div class="num"><span data-count="56">0</span><span class="plus">+</span></div><h4>Penghargaan</h4></div>
+  </div></div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center reveal"><span class="eyebrow center">Nilai Kami</span><h2 class="h-xl">Kenapa Harus Memilih Kami</h2></div>
+    <div class="values-grid">
+      <div class="value reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V5z"/><path d="m9 12 2 2 4-4"/></svg></div><h4>100% Amanah</h4><p>Sistem transaksi transparan, jujur, dan terjaga keandalannya untuk mendeliver solusi kepada Anda.</p></div>
+      <div class="value reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><h4>Tenaga Ahli Terampil</h4><p>Tim profesional berpengalaman 5+ tahun, menguasai beragam solusi alat pendingin untuk kebutuhan Anda.</p></div>
+      <div class="value reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h4>Berpengalaman 10+ Tahun</h4><p>Telah mengerjakan beragam proyek dan instalasi dengan berbagai skala industri.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <div class="section-head center reveal"><span class="eyebrow center">Tim Hebat Kami</span><h2 class="h-xl">Para Pemimpin Eksklusif Kami</h2></div>
+    <div class="team-grid">
+      <div class="team-card reveal"><div class="team-photo"><image-slot id="t-1" shape="rounded" radius="20" placeholder="Foto Agus Susilo"></image-slot></div><h4>Agus Susilo</h4><div class="role">Founder · COO</div></div>
+      <div class="team-card reveal"><div class="team-photo"><image-slot id="t-2" shape="rounded" radius="20" placeholder="Foto pemimpin"></image-slot></div><h4>Budi Santoso</h4><div class="role">Direktur Operasional</div></div>
+      <div class="team-card reveal"><div class="team-photo"><image-slot id="t-3" shape="rounded" radius="20" placeholder="Foto pemimpin"></image-slot></div><h4>Rina Wijaya</h4><div class="role">Kepala Teknik</div></div>
+      <div class="team-card reveal"><div class="team-photo"><image-slot id="t-4" shape="rounded" radius="20" placeholder="Foto pemimpin"></image-slot></div><h4>Dimas Pratama</h4><div class="role">Manajer Penjualan</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap"><div class="cta reveal" style="position:relative;border-radius:var(--radius-lg);overflow:hidden;background:linear-gradient(120deg,var(--accent-700),var(--accent) 55%,var(--cyan));color:#fff;padding:52px;display:grid;grid-template-columns:1.4fr auto;align-items:center;gap:30px;box-shadow:var(--shadow-lg)">
+    <div><h2 style="color:#fff;font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.02em">Siap Memulai Proyek Bersama Kami?</h2><p style="opacity:.92;margin-top:12px;font-size:16px">Konsultasikan kebutuhan pendingin Anda — survei lokasi gratis untuk proyek.</p></div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap"><a class="btn btn-lg" style="background:#fff;color:var(--accent-700)" href="kontak.html">Minta Penawaran</a><a class="btn btn-lg" style="background:#25D366;color:#fff" href="https://wa.me/6281289069996">Chat WhatsApp</a></div>
+  </div></div>
+</section>
+
+<footer class="footer">
+  <div class="ftop wrap"><div class="fgrid">
+    <div><div class="flogo"><img src="assets/pme-logo.png" alt="PME" /></div><p>PT. Pesona Mitratama Indonesia — General Contractor &amp; Air Conditioner Supplier. Spesialis pengadaan, instalasi, dan perawatan alat pendingin untuk hunian hingga industri.</p></div>
+    <div><h4>Layanan</h4><ul class="fmenu"><li><a href="layanan.html">Proyek Instalasi</a></li><li><a href="layanan.html">Perbaikan &amp; Pemeliharaan</a></li><li><a href="layanan.html">Konsultansi &amp; Desain</a></li><li><a href="layanan.html">Preventive Maintenance</a></li></ul></div>
+    <div><h4>Perusahaan</h4><ul class="fmenu"><li><a href="tentang.html">Tentang Kami</a></li><li><a href="katalog.html">Katalog Produk</a></li><li><a href="#">Portfolio Proyek</a></li><li><a href="kontak.html">Kontak</a></li></ul></div>
+    <div><h4>Hubungi Kami</h4><ul class="fcontact"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Jatiasih, Bekasi, Jawa Barat</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (021) 8243-6214</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> sales@pesonamitratama.com</li></ul></div>
+  </div></div>
+  <div class="fbot wrap"><span>© 2026 PT. Pesona Mitratama Indonesia. Hak cipta dilindungi.</span><span>Kebijakan Privasi &middot; Syarat &amp; Ketentuan</span></div>
+</footer>
+
+<a class="wa-fab" href="https://wa.me/6281289069996" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.2 1.3-1.7 1.3-.4 0-1 .1-3.4-.9-2.9-1.3-4.7-4.3-4.9-4.5-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.4.6c-.2.2-.4.4-.2.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.2.1.4.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.9.9c.2.1.4.2.4.3.1.1.1.6-.1 1.3z"/></svg></a>
+
+<script src="image-slot.js"></script>
+<script src="assets/tweaks.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

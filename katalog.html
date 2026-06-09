@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Katalog Produk AC — PME Indonesia</title>
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+.page-hero{background:linear-gradient(180deg,var(--accent-tint),#fff);border-bottom:1px solid var(--line)}
+.page-hero .wrap{padding:36px 0 30px}
+.crumb{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap}
+.crumb a{color:var(--muted)}.crumb a:hover{color:var(--accent)}
+.crumb .sep{color:var(--faint)}.crumb b{color:var(--ink)}
+.page-hero h1{font-size:clamp(28px,3.4vw,40px);font-weight:800;letter-spacing:-.02em}
+.page-hero p{max-width:760px;margin-top:12px;color:var(--ink-2)}
+
+/* category strip reused */
+.cat-strip2{padding:26px 0;border-bottom:1px solid var(--line);background:#fff}
+.cat-row{display:flex;gap:12px;overflow:auto;scrollbar-width:none;padding-bottom:4px}
+.cat-row::-webkit-scrollbar{display:none}
+.cat-pill{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:9px;min-width:108px;padding:16px 12px;
+  border:1px solid var(--line);border-radius:var(--radius);background:#fff;transition:.18s;cursor:pointer}
+.cat-pill:hover,.cat-pill.on{border-color:var(--accent);background:var(--accent-tint)}
+.cat-pill .cic{width:46px;height:46px;display:grid;place-items:center;border-radius:12px;background:var(--bg-soft);color:var(--accent)}
+.cat-pill.on .cic{background:var(--accent);color:#fff}
+.cat-pill .cic svg{width:26px;height:26px}
+.cat-pill span{font-family:var(--font-head);font-weight:600;font-size:12px;color:var(--ink-2);text-align:center;line-height:1.25}
+
+/* catalog layout */
+.catalog{padding:40px 0 84px}
+.catalog .wrap{display:grid;grid-template-columns:268px 1fr;gap:34px;align-items:start}
+.filters{position:sticky;top:96px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:8px 22px 22px;box-shadow:var(--shadow-sm)}
+.fgroup{padding:20px 0;border-bottom:1px solid var(--line-2)}
+.fgroup:last-child{border-bottom:0}
+.fgroup h4{font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.fopt{display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;font-size:14px;color:var(--ink-2)}
+.fopt input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+.fopt .cnt{margin-left:auto;font-size:12px;color:var(--faint)}
+.fopt:hover{color:var(--accent)}
+.price-range{display:flex;gap:10px;margin-top:6px}
+.price-range input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;outline:none}
+.price-range input:focus{border-color:var(--accent)}
+.fapply{width:100%;margin-top:16px}
+
+.cat-main .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.toolbar .res{font-size:14px;color:var(--muted)}
+.toolbar .res b{color:var(--ink)}
+.toolbar .right{display:flex;align-items:center;gap:12px}
+.sortsel{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:var(--pill);padding:9px 16px;font-size:13.5px;font-weight:600;font-family:var(--font-head);color:var(--ink-2);cursor:pointer;background:#fff}
+.sortsel svg{color:var(--accent)}
+.cat-grid-2{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pagination{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:46px}
+.pagination button{min-width:42px;height:42px;border-radius:var(--radius-sm);border:1px solid var(--line);background:#fff;
+  font-family:var(--font-head);font-weight:600;font-size:14px;color:var(--ink-2);cursor:pointer;transition:.16s;padding:0 8px}
+.pagination button:hover{border-color:var(--accent);color:var(--accent)}
+.pagination button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.filter-toggle{display:none}
+
+@media(max-width:1024px){.catalog .wrap{grid-template-columns:1fr}.cat-grid-2{grid-template-columns:repeat(2,1fr)}
+  .filters{position:fixed;inset:0 0 0 auto;width:86%;max-width:330px;z-index:120;border-radius:0;transform:translateX(100%);transition:transform .3s;overflow:auto;top:0}
+  .filters.open{transform:none}
+  .filter-toggle{display:inline-flex}
+  .filter-scrim{display:none;position:fixed;inset:0;background:rgba(12,26,43,.5);z-index:119}
+  .filter-scrim.open{display:block}}
+@media(max-width:640px){.cat-grid-2{grid-template-columns:1fr 1fr;gap:14px}}
+@media(max-width:460px){.cat-grid-2{grid-template-columns:1fr}}
+
+/* drawer (shared) */
+.drawer{position:fixed;inset:0;z-index:200;visibility:hidden}
+.drawer.open{visibility:visible}
+.drawer-scrim{position:absolute;inset:0;background:rgba(12,26,43,.5);opacity:0;transition:.25s}
+.drawer.open .drawer-scrim{opacity:1}
+.drawer-panel{position:absolute;top:0;left:0;bottom:0;width:84%;max-width:330px;background:#fff;padding:24px;transform:translateX(-100%);transition:transform .3s cubic-bezier(.3,.7,.3,1);overflow:auto}
+.drawer.open .drawer-panel{transform:none}
+.drawer-panel .brand{margin-bottom:24px}
+.drawer-panel a{display:block;padding:13px 12px;border-radius:10px;font-family:var(--font-head);font-weight:600;color:var(--ink-2);font-size:15px}
+.drawer-panel a:hover{background:var(--accent-tint);color:var(--accent)}
+.drawer-panel .dsearch{display:flex;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--pill);padding:0 6px 0 16px;align-items:center;margin-bottom:18px;height:46px}
+.drawer-panel .dsearch input{flex:1;border:0;background:transparent;outline:none;font-family:inherit;font-size:14px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="wrap">
+    <div class="tb-left">
+      <a class="tb-item" href="tel:02182436214"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (021) 8243-6214</a>
+      <a class="tb-item" href="https://wa.me/6281289069996"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2z"/></svg> (0899) 1736-699</a>
+      <a class="tb-item" href="mailto:sales@pesonamitratama.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> sales@pesonamitratama.com</a>
+    </div>
+    <div class="tb-right">
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3a4 4 0 0 0-4 4v2H7v3h3v6h3v-6h3l1-3h-4v-2a1 1 0 0 1 1-1z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.5-.4-5.1a2.7 2.7 0 0 0-1.9-1.9C18.9 4.5 12 4.5 12 4.5s-6.9 0-8.7.5A2.7 2.7 0 0 0 1.4 6.9C1 8.5 1 12 1 12s0 3.5.4 5.1a2.7 2.7 0 0 0 1.9 1.9c1.8.5 8.7.5 8.7.5s6.9 0 8.7-.5a2.7 2.7 0 0 0 1.9-1.9C23 15.5 23 12 23 12zM10 15.5v-7l6 3.5z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/pme-logo.png" alt="PT. Pesona Mitratama Indonesia" /></a>
+    <div class="searchbar">
+      <input type="text" placeholder="Cari produk AC, sparepart, atau layanan…" />
+      <button aria-label="Cari"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    </div>
+    <div class="h-right">
+      <div class="h-account">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        <a class="login-txt" href="#">Login</a><span class="reg-sep">/</span><a href="#">Daftar</a>
+      </div>
+      <a class="h-cart" href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1.6"/><circle cx="18" cy="21" r="1.6"/><path d="M2 3h2.5l2.2 12.5a2 2 0 0 0 2 1.7h8.5a2 2 0 0 0 2-1.6L21.5 7H6"/></svg><span class="count">1</span></a>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="index.html">Beranda</a>
+    <a href="katalog.html" class="active">AC Split</a>
+    <a href="katalog.html">AC Cassette</a>
+    <a href="katalog.html">Floor Standing</a>
+    <a href="katalog.html">Ceiling Duct</a>
+    <a href="katalog.html">VRV / VRF</a>
+    <a href="layanan.html">Layanan</a>
+    <a href="tentang.html">Tentang Kami</a>
+    <a href="kontak.html">Kontak</a>
+    <a href="kontak.html" class="quote-link">Minta Penawaran →</a>
+  </div>
+</nav>
+
+<div class="drawer">
+  <div class="drawer-scrim"></div>
+  <div class="drawer-panel">
+    <a class="brand" href="index.html"><img src="assets/pme-logo.png" alt="PME" style="height:40px" /></a>
+    <div class="dsearch"><input placeholder="Cari produk…" /><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#62748A" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+    <a href="index.html">Beranda</a>
+    <a href="katalog.html">Katalog Produk AC</a>
+    <a href="layanan.html">Layanan</a>
+    <a href="tentang.html">Tentang Kami</a>
+    <a href="kontak.html">Kontak</a>
+    <a href="kontak.html" style="color:var(--accent)">Minta Penawaran →</a>
+  </div>
+</div>
+
+<!-- page hero -->
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">Beranda</a><span class="sep">/</span><a href="katalog.html">Katalog</a><span class="sep">/</span><b>AC Split &amp; Cassette</b></div>
+    <h1>Katalog Produk Air Conditioning</h1>
+    <p>Temukan unit AC sesuai kebutuhan Anda — dari wall mounted split, cassette, hingga floor standing. Harga transparan, garansi resmi, dan dukungan instalasi profesional.</p>
+  </div>
+</section>
+
+<!-- category strip -->
+<div class="cat-strip2">
+  <div class="wrap">
+    <div class="cat-row">
+      <div class="cat-pill on"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="7" rx="2"/><path d="M6 16c0 1.5 1 2 1 3M11 16c0 1.5-1 2-1 3M16 16c0 1.5 1 2 1 3M6 10h.01M9 10h6"/></svg></span><span>Wall Split</span></div>
+      <div class="cat-pill"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><rect x="7" y="8" width="10" height="8" rx="1"/></svg></span><span>Cassette</span></div>
+      <div class="cat-pill"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 6h4M10 9h4"/></svg></span><span>Floor Standing</span></div>
+      <div class="cat-pill"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="6" rx="2"/><path d="M6 13v3M10 13v4M14 13v3M18 13v4"/></svg></span><span>Ceiling Susp.</span></div>
+      <div class="cat-pill"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="8" rx="1.5"/><path d="M5 9h6"/></svg></span><span>Ceiling Duct</span></div>
+      <div class="cat-pill"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="9" height="6" rx="1.5"/><rect x="13" y="9" width="9" height="6" rx="1.5"/></svg></span><span>Multi Split</span></div>
+      <div class="cat-pill"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="3" width="10" height="18" rx="3"/><circle cx="12" cy="13" r="3"/></svg></span><span>Air Purifier</span></div>
+      <div class="cat-pill"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><circle cx="12" cy="10.5" r="3.5"/></svg></span><span>Packaged</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- catalog -->
+<section class="catalog">
+  <div class="wrap">
+    <aside class="filters" id="filters">
+      <div class="fgroup">
+        <h4>Brand</h4>
+        <label class="fopt"><input type="checkbox" checked /> Daikin <span class="cnt">128</span></label>
+        <label class="fopt"><input type="checkbox" /> Gree <span class="cnt">96</span></label>
+        <label class="fopt"><input type="checkbox" /> Panasonic <span class="cnt">84</span></label>
+        <label class="fopt"><input type="checkbox" /> Samsung <span class="cnt">72</span></label>
+        <label class="fopt"><input type="checkbox" /> LG <span class="cnt">61</span></label>
+        <label class="fopt"><input type="checkbox" /> Mitsubishi <span class="cnt">54</span></label>
+      </div>
+      <div class="fgroup">
+        <h4>Kapasitas (PK)</h4>
+        <label class="fopt"><input type="checkbox" /> ½ PK <span class="cnt">22</span></label>
+        <label class="fopt"><input type="checkbox" checked /> 1 PK <span class="cnt">88</span></label>
+        <label class="fopt"><input type="checkbox" /> 1½ PK <span class="cnt">76</span></label>
+        <label class="fopt"><input type="checkbox" /> 2 PK <span class="cnt">41</span></label>
+        <label class="fopt"><input type="checkbox" /> 2½ PK ke atas <span class="cnt">35</span></label>
+      </div>
+      <div class="fgroup">
+        <h4>Teknologi</h4>
+        <label class="fopt"><input type="checkbox" /> Inverter <span class="cnt">142</span></label>
+        <label class="fopt"><input type="checkbox" /> Standard <span class="cnt">98</span></label>
+        <label class="fopt"><input type="checkbox" /> Low Watt <span class="cnt">37</span></label>
+      </div>
+      <div class="fgroup">
+        <h4>Rentang Harga</h4>
+        <div class="price-range"><input placeholder="Min" value="3.000.000" /><input placeholder="Max" value="20.000.000" /></div>
+        <button class="btn btn-primary btn-sm fapply">Terapkan Filter</button>
+      </div>
+    </aside>
+
+    <div class="cat-main">
+      <div class="toolbar">
+        <div class="res">Menampilkan <b>1–9</b> dari <b>240</b> produk</div>
+        <div class="right">
+          <button class="filter-toggle btn btn-ghost btn-sm" id="filterBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg> Filter</button>
+          <div class="sortsel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h13M3 12h9M3 18h5M18 8V4M18 4l-3 3M18 4l3 3"/></svg> Termurah</div>
+        </div>
+      </div>
+      <div class="cat-grid-2" id="cat-products"></div>
+      <div class="pagination">
+        <button>‹</button>
+        <button class="on">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>…</button>
+        <button>27</button>
+        <button>›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="filter-scrim" id="filterScrim"></div>
+
+<footer class="footer">
+  <div class="ftop wrap">
+    <div class="fgrid">
+      <div>
+        <div class="flogo"><img src="assets/pme-logo.png" alt="PME" /></div>
+        <p>PT. Pesona Mitratama Indonesia — General Contractor &amp; Air Conditioner Supplier. Spesialis pengadaan, instalasi, dan perawatan alat pendingin untuk hunian hingga industri.</p>
+      </div>
+      <div>
+        <h4>Layanan</h4>
+        <ul class="fmenu"><li><a href="layanan.html">Proyek Instalasi</a></li><li><a href="layanan.html">Perbaikan &amp; Pemeliharaan</a></li><li><a href="layanan.html">Konsultansi &amp; Desain</a></li><li><a href="layanan.html">Preventive Maintenance</a></li><li><a href="katalog.html">Pengadaan &amp; Penjualan</a></li></ul>
+      </div>
+      <div>
+        <h4>Perusahaan</h4>
+        <ul class="fmenu"><li><a href="tentang.html">Tentang Kami</a></li><li><a href="katalog.html">Katalog Produk</a></li><li><a href="#">Portfolio Proyek</a></li><li><a href="#">Berita &amp; Artikel</a></li><li><a href="kontak.html">Kontak</a></li></ul>
+      </div>
+      <div>
+        <h4>Hubungi Kami</h4>
+        <ul class="fcontact">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Jatiasih, Bekasi, Jawa Barat, Indonesia</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Bekasi (021) 8243-6214 &middot; Karawang (0267) 840-2493</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> sales@pesonamitratama.com</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Senin–Sabtu, 07.30–18.00 WIB</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="fbot wrap">
+    <span>© 2026 PT. Pesona Mitratama Indonesia. Hak cipta dilindungi.</span>
+    <span>Kebijakan Privasi &middot; Syarat &amp; Ketentuan</span>
+  </div>
+</footer>
+
+<a class="wa-fab" href="https://wa.me/6281289069996" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.2 1.3-1.7 1.3-.4 0-1 .1-3.4-.9-2.9-1.3-4.7-4.3-4.9-4.5-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.4.6c-.2.2-.4.4-.2.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.2.1.4.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.9.9c.2.1.4.2.4.3.1.1.1.6-.1 1.3z"/></svg></a>
+
+<script src="image-slot.js"></script>
+<script src="assets/products.js"></script>
+<script src="assets/tweaks.js"></script>
+<script src="assets/site.js"></script>
+<script>
+(function(){
+  var host = document.getElementById('cat-products');
+  if(host && window.PME_PRODUCTS){
+    // repeat the catalog to fill the page
+    var list = window.PME_PRODUCTS.concat(window.PME_PRODUCTS).slice(0,9);
+    list.forEach(function(p){ host.insertAdjacentHTML('beforeend', window.pmeProductCard(p)); });
+  }
+  // mobile filter drawer
+  var fb=document.getElementById('filterBtn'), f=document.getElementById('filters'), sc=document.getElementById('filterScrim');
+  if(fb){ fb.onclick=function(){ f.classList.add('open'); sc.classList.add('open'); }; sc.onclick=function(){ f.classList.remove('open'); sc.classList.remove('open'); }; }
+})();
+</script>
+</body>
+</html>
